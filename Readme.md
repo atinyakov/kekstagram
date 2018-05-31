@@ -1,8 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Андрей Тиняков](https://up.htmlacademy.ru/javascript/14/user/156793).
-* Наставник: `Неизвестно`.
-
+* Наставник: [Сергей Рубец](https://htmlacademy.ru/profile/amator).
 ---
 
 _Не удаляйте и не обращайте внимание на файлы:_<br>
