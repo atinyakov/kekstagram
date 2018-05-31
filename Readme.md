@@ -2,7 +2,6 @@
 
 * Студент: [Андрей Тиняков](https://up.htmlacademy.ru/javascript/14/user/156793).
 * Наставник: [Сергей Рубец](https://htmlacademy.ru/profile/amator).
-test
 ---
 
 _Не удаляйте и не обращайте внимание на файлы:_<br>
