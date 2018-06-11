@@ -18,6 +18,8 @@ var comments = [
   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
 ];
 
+var PICTURES_AMOUNT = 25;
+
 var generateRandomNumber = function (min, max) {
   var rand = min + Math.random() * (max + 1 - min);
   rand = Math.floor(rand);
@@ -35,13 +37,12 @@ var createPhoto = function (i) {
 };
 
 var fillProtosArray = function () {
-  for (var i = 0; i < 25; i++) {
+  for (var i = 0; i < PICTURES_AMOUNT; i++) {
     photos.push(createPhoto(i));
   }
 };
 
 fillProtosArray();
-// console.log(photos);
 
 var template = document.querySelector('#picture');
 var imageTemplate = template.content.querySelector('.picture__link');
@@ -64,13 +65,18 @@ var createElements = function () {
 createElements();
 
 var bigPicture = document.querySelector('.big-picture');
-bigPicture.classList.remove('hidden');
-
-bigPicture.querySelector('.big-picture__img img').src = photos[0].url;
-bigPicture.querySelector('.likes-count').textContent = photos[0].likes;
-bigPicture.querySelector('.comments-count').textContent = photos[0].comments.length;
-bigPicture.querySelector('.social__caption').textContent = photos[0].description;
 var commentsBlock = bigPicture.querySelector('.social__comments');
+
+var openBigPicture = function () {
+  bigPicture.classList.remove('hidden');
+
+  bigPicture.querySelector('.big-picture__img img').src = photos[0].url;
+  bigPicture.querySelector('.likes-count').textContent = photos[0].likes;
+  bigPicture.querySelector('.comments-count').textContent = photos[0].comments.length;
+  bigPicture.querySelector('.social__caption').textContent = photos[0].description;
+};
+
+openBigPicture();
 
 var addComments = function () {
   var commentsFragment = document.createDocumentFragment();
@@ -87,5 +93,9 @@ var addComments = function () {
 
 addComments();
 
-document.querySelector('.social__comment-count').classList.add('visually-hidden');
-document.querySelector('.social__loadmore').classList.add('visually-hidden');
+var hideElement = function (elem) {
+  document.querySelector(elem).classList.add('visually-hidden');
+};
+
+hideElement('.social__comment-count');
+hideElement('.social__loadmore');
