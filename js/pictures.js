@@ -111,6 +111,7 @@ var filters = uploadForm.querySelector('.effects__list');
 var imagePreview = uploadForm.querySelector('.img-upload__preview');
 var pictures = document.querySelector('.pictures.container');
 var closeBigPicture = bigPicture.querySelector('.big-picture__cancel');
+var overlays = document.querySelectorAll('.overlay');
 
 uploadFile.addEventListener('change', function () {
   uploadOverlay.classList.remove('hidden');
@@ -119,29 +120,28 @@ uploadFile.addEventListener('change', function () {
   filterScale.style.width = filterInitialX + '%';
 });
 
-var closeUploadOverlay = function (item) {
-  item.classList.add('hidden');
-  item.value = '';
+var closeUploadOverlay = function () {
+  [].forEach.call(overlays, function (el) {
+    el.classList.add('hidden');
+    el.value = '';
+  });
 };
 
-closeOverlayButton.addEventListener('mouseup', function () {
-  closeUploadOverlay(uploadOverlay);
-});
+closeOverlayButton.addEventListener('mouseup', closeUploadOverlay);
 
-closeBigPicture.addEventListener('mouseup', function () {
-  closeUploadOverlay(bigPicture);
-});
-
+closeBigPicture.addEventListener('mouseup', closeUploadOverlay);
 
 filters.addEventListener('mouseup', function (evt) {
-  imagePreview.classList = 'img-upload__preview';
+  imagePreview.className = 'img-upload__preview';
   var currentEffect = evt.target.classList[1];
   imagePreview.classList.add(currentEffect);
 });
 
 pictures.addEventListener('mouseup', function (evt) {
   if (evt.target.tagName === 'IMG') {
-    var photo = evt.target.src.slice(-6, -2);
+    var FROM = -6;
+    var TO = -2;
+    var photo = evt.target.src.slice(FROM, TO);
     var regexp = /\d+/;
     var photoIndex = photo.match(regexp);
     openBigPicture(photoIndex[0]);
