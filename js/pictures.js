@@ -66,17 +66,32 @@ createElements();
 
 var bigPicture = document.querySelector('.big-picture');
 var commentsBlock = bigPicture.querySelector('.social__comments');
+var uploadForm = document.querySelector('.img-upload__form');
+var uploadFile = uploadForm.querySelector('#upload-file');
+var uploadOverlay = uploadForm.querySelector('.img-upload__overlay');
+var closeOverlayButton = uploadForm.querySelector('.img-upload__cancel');
+var filterPin = uploadForm.querySelector('.scale__pin ');
+var filterInitialX;
+var filterScale = uploadForm.querySelector('.scale__level');
+var filters = uploadForm.querySelector('.effects__list');
+var imagePreview = uploadForm.querySelector('.img-upload__preview');
+var pictures = document.querySelector('.pictures.container');
+var closeBigPicture = bigPicture.querySelector('.big-picture__cancel');
+var overlays = document.querySelectorAll('.overlay');
+var cancelButtons = document.querySelectorAll('.cancel');
+var scaleValue = uploadForm.querySelector('.scale__value');
+var imgPreview = uploadForm.querySelector('.img-upload__preview');
 
-var openBigPicture = function () {
+var openBigPicture = function (i) {
   bigPicture.classList.remove('hidden');
-
-  bigPicture.querySelector('.big-picture__img img').src = photos[0].url;
-  bigPicture.querySelector('.likes-count').textContent = photos[0].likes;
-  bigPicture.querySelector('.comments-count').textContent = photos[0].comments.length;
-  bigPicture.querySelector('.social__caption').textContent = photos[0].description;
+  closeBigPicture.addEventListener('mouseup', closeUploadOverlay);
+  i--;
+  bigPicture.querySelector('.big-picture__img img').src = photos[i].url;
+  bigPicture.querySelector('.big-picture__img img').alt = '';
+  bigPicture.querySelector('.likes-count').textContent = photos[i].likes;
+  bigPicture.querySelector('.comments-count').textContent = photos[i].comments.length;
+  bigPicture.querySelector('.social__caption').textContent = photos[i].description;
 };
-
-openBigPicture();
 
 var addComments = function () {
   var commentsFragment = document.createDocumentFragment();
@@ -99,3 +114,65 @@ var hideElement = function (elem) {
 
 hideElement('.social__comment-count');
 hideElement('.social__loadmore');
+
+uploadFile.addEventListener('change', function () {
+  uploadOverlay.classList.remove('hidden');
+  closeOverlayButton.addEventListener('mouseup', closeUploadOverlay);
+  filterInitialX = 20;
+  filterPin.style.left = filterInitialX + '%';
+  filterScale.style.width = filterInitialX + '%';
+});
+
+var defineFilterRatio = function (evt) {
+  // console.log(evt.target.classList)
+  var SCALE_LINE_LENGTH = 450;
+  var PERCENTS_100 = 100;
+  var ratio;
+  var scaleLineCoord = document.querySelector('.scale__line').getBoundingClientRect();
+  ratio = Math.floor((evt.clientX - scaleLineCoord.x) * PERCENTS_100 / SCALE_LINE_LENGTH);
+  scaleValue.value = ratio;
+
+  if (imgPreview.classList.contains('effects__preview--chrome')) {
+    imgPreview.style.filter = 'filter: grayscale(' + ratio / PERCENTS_100 + ')';
+  } else if (imgPreview.classList.contains('effects__preview--sepia')) {
+    imgPreview.style.filter = 'filter: sepia(' + ratio / PERCENTS_100 + ')';
+  } else if (imgPreview.classList.contains('effects__preview--marvin')) {
+    imgPreview.style.filter = 'filter: invert(' + ratio + '%)';
+  } else if (imgPreview.classList.contains('effects__preview--phobos')) {
+    imgPreview.style.filter = 'filter: blur(' + (ratio * 3 / PERCENTS_100) + 'px)';
+  } else if (imgPreview.classList.contains('effects__preview--heat')) {
+    imgPreview.style.filter = 'filter: brightness(' + (1 + ratio * 2 / PERCENTS_100) + ')';
+  }
+};
+
+filterPin.addEventListener('mouseup', defineFilterRatio);
+
+var closeUploadOverlay = function () {
+  [].forEach.call(overlays, function (el) {
+    el.classList.add('hidden');
+    el.value = '';
+  });
+  [].forEach.call(cancelButtons, function (el) {
+    el.removeEventListener('mouseup', closeUploadOverlay);
+    el.removeEventListener('mouseup', applyEffect);
+  });
+};
+
+filters.addEventListener('mouseup', function (evt) {
+  imagePreview.className = 'img-upload__preview';
+  var currentEffect = evt.target.classList[1];
+  imagePreview.classList.add(currentEffect);
+});
+
+var applyEffect = function (evt) {
+  if (evt.target.tagName === 'IMG') {
+    var FROM = -6;
+    var TO = -2;
+    var photoURL = evt.target.src.slice(FROM, TO);
+    var regexp = /\d+/;
+    var photoNumbersInUrl = photoURL.match(regexp);
+    openBigPicture(photoNumbersInUrl[0]);
+  }
+};
+
+pictures.addEventListener('mouseup', applyEffect);
