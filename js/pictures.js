@@ -79,6 +79,8 @@ var pictures = document.querySelector('.pictures.container');
 var closeBigPicture = bigPicture.querySelector('.big-picture__cancel');
 var overlays = document.querySelectorAll('.overlay');
 var cancelButtons = document.querySelectorAll('.cancel');
+var scaleValue = uploadForm.querySelector('.scale__value');
+var imgPreview = uploadForm.querySelector('.img-upload__preview');
 
 var openBigPicture = function (i) {
   bigPicture.classList.remove('hidden');
@@ -121,6 +123,30 @@ uploadFile.addEventListener('change', function () {
   filterScale.style.width = filterInitialX + '%';
 });
 
+var defineFilterRatio = function (evt) {
+  // console.log(evt.target.classList)
+  var SCALE_LINE_LENGTH = 450;
+  var PERCENTS_100 = 100;
+  var ratio;
+  var scaleLineCoord = document.querySelector('.scale__line').getBoundingClientRect();
+  ratio = Math.floor((evt.clientX - scaleLineCoord.x) * PERCENTS_100 / SCALE_LINE_LENGTH);
+  scaleValue.value = ratio;
+
+  if (imgPreview.classList.contains('effects__preview--chrome')) {
+    imgPreview.style.filter = 'filter: grayscale(' + ratio / PERCENTS_100 + ')';
+  } else if (imgPreview.classList.contains('effects__preview--sepia')) {
+    imgPreview.style.filter = 'filter: sepia(' + ratio / PERCENTS_100 + ')';
+  } else if (imgPreview.classList.contains('effects__preview--marvin')) {
+    imgPreview.style.filter = 'filter: invert(' + ratio + '%)';
+  } else if (imgPreview.classList.contains('effects__preview--phobos')) {
+    imgPreview.style.filter = 'filter: blur(' + (ratio * 3 / PERCENTS_100) + 'px)';
+  } else if (imgPreview.classList.contains('effects__preview--heat')) {
+    imgPreview.style.filter = 'filter: brightness(' + (1 + ratio * 2 / PERCENTS_100) + ')';
+  }
+};
+
+filterPin.addEventListener('mouseup', defineFilterRatio);
+
 var closeUploadOverlay = function () {
   [].forEach.call(overlays, function (el) {
     el.classList.add('hidden');
@@ -128,6 +154,7 @@ var closeUploadOverlay = function () {
   });
   [].forEach.call(cancelButtons, function (el) {
     el.removeEventListener('mouseup', closeUploadOverlay);
+    el.removeEventListener('mouseup', applyEffect);
   });
 };
 
@@ -137,7 +164,7 @@ filters.addEventListener('mouseup', function (evt) {
   imagePreview.classList.add(currentEffect);
 });
 
-pictures.addEventListener('mouseup', function (evt) {
+var applyEffect = function (evt) {
   if (evt.target.tagName === 'IMG') {
     var FROM = -6;
     var TO = -2;
@@ -146,4 +173,6 @@ pictures.addEventListener('mouseup', function (evt) {
     var photoNumbersInUrl = photoURL.match(regexp);
     openBigPicture(photoNumbersInUrl[0]);
   }
-});
+};
+
+pictures.addEventListener('mouseup', applyEffect);
