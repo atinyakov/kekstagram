@@ -81,6 +81,8 @@ var overlays = document.querySelectorAll('.overlay');
 var cancelButtons = document.querySelectorAll('.cancel');
 var scaleValue = uploadForm.querySelector('.scale__value');
 var imgPreview = uploadForm.querySelector('.img-upload__preview');
+var ESC_KEYCODE = 27;
+var SPACE_KEYCODE = 32;
 
 
 var addComments = function () {
@@ -152,7 +154,6 @@ var closeUploadOverlay = function () {
 };
 
 var keyPressHandler = function (evt) {
-  var ESC_KEYCODE = 27;
 
   if (evt.keyCode === ESC_KEYCODE) {
     closeUploadOverlay();
@@ -200,7 +201,7 @@ var hashtagInput = uploadForm.querySelector('.text__hashtags');
 var hashtagCheckHandler = function (evt) {
   var hashtags;
 
-  if (evt.keyCode === 32) {
+  if (evt.keyCode === SPACE_KEYCODE) {
     hashtags = hashtagInput.value.split(' ', 5);
 
     hashtags.forEach(function (i) {
