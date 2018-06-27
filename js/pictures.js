@@ -26,6 +26,10 @@ var generateRandomNumber = function (min, max) {
   return rand;
 };
 
+var mathClamp = function (min, mid, max) {
+  return Math.min(Math.max(min, mid), max);
+};
+
 var createPhoto = function (i) {
   var photo = {
     url: 'photos/' + ++i + '.jpg',
@@ -83,7 +87,9 @@ var scaleValue = uploadForm.querySelector('.scale__value');
 var imgPreview = uploadForm.querySelector('.img-upload__preview');
 var ESC_KEYCODE = 27;
 var SPACE_KEYCODE = 32;
-
+var SCALE_LINE_LENGTH = 450;
+var PERCENTS_100 = 100;
+var scaleLineCoord = document.querySelector('.scale__line').getBoundingClientRect();
 
 var addComments = function () {
   var commentsFragment = document.createDocumentFragment();
@@ -115,11 +121,8 @@ uploadFile.addEventListener('change', function () {
 });
 
 var defineFilterRatio = function (evt) {
-  var SCALE_LINE_LENGTH = 450;
-  var PERCENTS_100 = 100;
   var ratio;
 
-  var scaleLineCoord = document.querySelector('.scale__line').getBoundingClientRect();
   ratio = Math.floor((evt.clientX - scaleLineCoord.x) * PERCENTS_100 / SCALE_LINE_LENGTH);
   scaleValue.value = ratio;
 
@@ -214,3 +217,34 @@ var hashtagCheckHandler = function (evt) {
 };
 
 hashtagInput.addEventListener('keyup', hashtagCheckHandler);
+
+// ---------------------------- filter drag -------------------------------
+
+filterPin.addEventListener('mousedown', function (evt) {
+  evt.preventDefault();
+
+  var startCoords = {
+    x: 20 // %
+  };
+
+  var mouseMoveHandler = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    startCoords = {
+      x: Math.floor((moveEvt.clientX - scaleLineCoord.x) * PERCENTS_100 / SCALE_LINE_LENGTH) - 100
+    };
+
+    filterPin.style.left = mathClamp(0, startCoords.x, 100) + '%';
+    filterScale.style.width = mathClamp(0, startCoords.x, 100) + '%';
+  };
+
+  var mouseUpHandler = function (upEvt) {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', mouseMoveHandler);
+    document.removeEventListener('mouseup', mouseUpHandler);
+  };
+
+  document.addEventListener('mousemove', mouseMoveHandler);
+  document.addEventListener('mouseup', mouseUpHandler);
+});
