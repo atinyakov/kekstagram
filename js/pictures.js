@@ -83,7 +83,6 @@ var pictures = document.querySelector('.pictures.container');
 var closeBigPicture = bigPicture.querySelector('.big-picture__cancel');
 var overlays = document.querySelectorAll('.overlay');
 var cancelButtons = document.querySelectorAll('.cancel');
-var scaleValue = uploadForm.querySelector('.scale__value');
 var imgPreview = uploadForm.querySelector('.img-upload__preview');
 var ESC_KEYCODE = 27;
 var SPACE_KEYCODE = 32;
@@ -147,7 +146,7 @@ var closeUploadOverlay = function () {
 
   [].forEach.call(cancelButtons, function (el) {
     el.removeEventListener('mouseup', closeUploadOverlay);
-    el.removeEventListener('mouseup', applyEffect);
+    el.removeEventListener('mouseup', openPicture);
   });
 
   document.removeEventListener('keyup', keyPressHandler);
@@ -176,12 +175,13 @@ var openBigPicture = function (i) {
 
 filters.addEventListener('mouseup', function (evt) {
   imagePreview.className = 'img-upload__preview';
+  imgPreview.style.filter = '';
   var currentEffect = evt.target.classList[1];
   imagePreview.classList.add(currentEffect);
 });
 
-var applyEffect = function (evt) {
-  if (evt.target.tagName === 'IMG') {
+var openPicture = function (evt) {
+  if (evt.target.tagName === 'IMG' && evt.target.classList === 'picture__img') {
     var FROM = -6;
     var TO = -2;
     var photoURL = evt.target.src.slice(FROM, TO);
@@ -191,7 +191,7 @@ var applyEffect = function (evt) {
   }
 };
 
-pictures.addEventListener('mouseup', applyEffect);
+pictures.addEventListener('mouseup', openPicture);
 
 // --------------HASHTAGS---------------------------
 
@@ -239,6 +239,7 @@ filterPin.addEventListener('mousedown', function (evt) {
   var mouseUpHandler = function (upEvt) {
     upEvt.preventDefault();
 
+    defineFilterRatio(startCoords.x);
     document.removeEventListener('mousemove', mouseMoveHandler);
     document.removeEventListener('mouseup', mouseUpHandler);
   };
