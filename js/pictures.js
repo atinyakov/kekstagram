@@ -120,26 +120,23 @@ uploadFile.addEventListener('change', function () {
   filterScale.style.width = filterInitialX + '%';
 });
 
-var defineFilterRatio = function (evt) {
-  var ratio;
-
-  ratio = Math.floor((evt.clientX - scaleLineCoord.x) * PERCENTS_100 / SCALE_LINE_LENGTH);
-  scaleValue.value = ratio;
+var defineFilterRatio = function (ratio) {
 
   if (imgPreview.classList.contains('effects__preview--chrome')) {
-    imgPreview.style.filter = 'filter: grayscale(' + ratio / PERCENTS_100 + ')';
+    imgPreview.style.filter = 'grayscale(' + ratio / PERCENTS_100 + ')';
   } else if (imgPreview.classList.contains('effects__preview--sepia')) {
-    imgPreview.style.filter = 'filter: sepia(' + ratio / PERCENTS_100 + ')';
+    imgPreview.style.filter = 'sepia(' + ratio / PERCENTS_100 + ')';
   } else if (imgPreview.classList.contains('effects__preview--marvin')) {
-    imgPreview.style.filter = 'filter: invert(' + ratio + '%)';
+    imgPreview.style.filter = 'invert(' + ratio + '%)';
   } else if (imgPreview.classList.contains('effects__preview--phobos')) {
-    imgPreview.style.filter = 'filter: blur(' + (ratio * 3 / PERCENTS_100) + 'px)';
+    imgPreview.style.filter = 'blur(' + (ratio * 3 / PERCENTS_100) + 'px)';
   } else if (imgPreview.classList.contains('effects__preview--heat')) {
-    imgPreview.style.filter = 'filter: brightness(' + (1 + ratio * 2 / PERCENTS_100) + ')';
+    imgPreview.style.filter = 'brightness(' + (1 + ratio * 2 / PERCENTS_100) + ')';
   }
 };
 
-filterPin.addEventListener('mouseup', defineFilterRatio);
+// filterPin.addEventListener('mouseup', defineFilterRatio);
+// filterPin.addEventListener('mousemove', defineFilterRatio);
 
 
 var closeUploadOverlay = function () {
@@ -236,6 +233,7 @@ filterPin.addEventListener('mousedown', function (evt) {
 
     filterPin.style.left = mathClamp(0, startCoords.x, 100) + '%';
     filterScale.style.width = mathClamp(0, startCoords.x, 100) + '%';
+    defineFilterRatio(mathClamp(0, startCoords.x, 100));
   };
 
   var mouseUpHandler = function (upEvt) {
