@@ -90,7 +90,7 @@ var ESC_KEYCODE = 27;
 var SPACE_KEYCODE = 32;
 var SCALE_LINE_LENGTH = 450;
 var PERCENTS_100 = 100;
-var scaleLineCoord = document.querySelector('.scale__line').getBoundingClientRect();
+
 
 var addComments = function () {
   var commentsFragment = document.createDocumentFragment();
@@ -223,15 +223,19 @@ filterPin.addEventListener('mousedown', function (evt) {
   evt.preventDefault();
 
   var startCoords = {
-    x: 20 // %
+    // x: 20 // %
   };
 
   var mouseMoveHandler = function (moveEvt) {
     moveEvt.preventDefault();
 
+    var scaleLineCoord = document.querySelector('.scale__line').getBoundingClientRect();
+
     startCoords = {
-      x: Math.floor((moveEvt.clientX - scaleLineCoord.x) * PERCENTS_100 / SCALE_LINE_LENGTH) - 100
+      x: Math.floor((moveEvt.clientX - scaleLineCoord.x) * PERCENTS_100 / SCALE_LINE_LENGTH)
     };
+    console.log(startCoords.x);
+
 
     filterPin.style.left = mathClamp(0, startCoords.x, 100) + '%';
     filterScale.style.width = mathClamp(0, startCoords.x, 100) + '%';
