@@ -222,9 +222,7 @@ hashtagInput.addEventListener('keyup', hashtagCheckHandler);
 filterPin.addEventListener('mousedown', function (evt) {
   evt.preventDefault();
 
-  var startCoords = {
-    // x: 20 // %
-  };
+  var startCoords = {};
 
   var mouseMoveHandler = function (moveEvt) {
     moveEvt.preventDefault();
@@ -234,7 +232,6 @@ filterPin.addEventListener('mousedown', function (evt) {
     startCoords = {
       x: Math.floor((moveEvt.clientX - scaleLineCoord.x) * PERCENTS_100 / SCALE_LINE_LENGTH)
     };
-    console.log(startCoords.x);
 
 
     filterPin.style.left = mathClamp(0, startCoords.x, 100) + '%';
