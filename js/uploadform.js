@@ -53,9 +53,7 @@
 
 
   // --------------HASHTAGS---------------------------
-
   var hashtagInput = uploadForm.querySelector('.text__hashtags');
-
 
   var hashtagCheckHandler = function (evt) {
     var hashtags;
