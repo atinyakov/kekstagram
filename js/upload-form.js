@@ -16,10 +16,11 @@
   var filterScale = uploadForm.querySelector('.scale__level');
   var filters = uploadForm.querySelector('.effects__list');
   var imagePreview = uploadForm.querySelector('.img-upload__preview');
+  var submitButton = uploadForm.querySelector('#upload-submit');
 
   uploadFile.addEventListener('change', function () {
     uploadOverlay.classList.remove('hidden');
-    closeOverlayButton.addEventListener('mouseup', window.pictures.closeUploadOverlay);
+    closeOverlayButton.addEventListener('mouseup', window.pictures.closePopup);
     filterInitialX = 20;
     filterPin.style.left = filterInitialX + '%';
     filterScale.style.width = filterInitialX + '%';
@@ -57,17 +58,22 @@
 
   var hashtagCheckHandler = function (evt) {
     var hashtags;
+    var regexp = /^#\w+$/gi;
+    // if (evt.keyCode === SPACE_KEYCODE) {
+    //   hashtags = hashtagInput.value.split(' ', 5);
+    //
+    //   hashtags.forEach(function (i) {
+    //     // var regexp = /^#\w+$/;
+    //     if (i.search(regexp) === -1) {
+    //       hashtagInput.setCustomValidity('hashtags should start with \'#\' and splitted by \' \'');
+    //     }
+    //   });
+    // }
 
-    if (evt.keyCode === SPACE_KEYCODE) {
-      hashtags = hashtagInput.value.split(' ', 5);
+     var a = hashtagInput.value.match(/^#\w+$/gi);
+     if (a !== null) {
 
-      hashtags.forEach(function (i) {
-        var regexp = /^#\w+$/;
-        if (i.search(regexp) === -1) {
-          hashtagInput.setCustomValidity('Pattern mismatch');
-        }
-      });
-    }
+     }
   };
 
   hashtagInput.addEventListener('keyup', hashtagCheckHandler);
@@ -104,5 +110,27 @@
 
     document.addEventListener('mousemove', mouseMoveHandler);
     document.addEventListener('mouseup', mouseUpHandler);
+  });
+
+  // ---------------FORM_SUBMIT----------------------
+
+  var onError = function (message) {
+    var errorMessage = document.querySelector('img-upload__message--error');
+    errorMessage.classlist.remove('hidden');
+  };
+
+  var onSuccess = function () {
+    alert('Загружено');
+    window.pictures.closePopup();
+  };
+
+  uploadForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    // evt.checkValidity();
+
+    var SERVER_URL = 'https://js.dump.academy/kekstagram';
+
+    var formData = new FormData(uploadForm);
+    window.send(formData, SERVER_URL, onSuccess, onError);
   });
 }());
