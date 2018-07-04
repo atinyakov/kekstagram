@@ -56,24 +56,21 @@
   // --------------HASHTAGS---------------------------
   var hashtagInput = uploadForm.querySelector('.text__hashtags');
 
-  var hashtagCheckHandler = function (evt) {
+  var hashtagCheckHandler = function () {
     var hashtags;
-    var regexp = /^#\w+$/gi;
-    // if (evt.keyCode === SPACE_KEYCODE) {
-    //   hashtags = hashtagInput.value.split(' ', 5);
-    //
-    //   hashtags.forEach(function (i) {
-    //     // var regexp = /^#\w+$/;
-    //     if (i.search(regexp) === -1) {
-    //       hashtagInput.setCustomValidity('hashtags should start with \'#\' and splitted by \' \'');
-    //     }
-    //   });
+    // var regexp = /#\w+\s/gi;
+
+    hashtags = hashtagInput.value.split(' ', 5);
+
+    hashtags.forEach(function (i) {
+      if (i.match(/#\w+/) === null) {
+        hashtagInput.setCustomValidity('hashtags should start with \'#\' and splitted by \' \'');
+        // console.log('valid' + i);
+      } else {
+        console.log('valid ' + i);
+      }
+    });
     // }
-
-     var a = hashtagInput.value.match(/^#\w+$/gi);
-     if (a !== null) {
-
-     }
   };
 
   hashtagInput.addEventListener('keyup', hashtagCheckHandler);
