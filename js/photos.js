@@ -63,8 +63,8 @@
 
   var addComments = function (data) {
     var commentsFragment = document.createDocumentFragment();
-    // console.log(window.photos.data);
-    for (var i = 0; i < data[0].comments.length; i++) {
+
+    for (var i = 0; i < 5; i++) {
       var commentTemplate = commentsBlock.querySelector('.social__comment').cloneNode(true);
       commentTemplate.querySelector('.social__picture').src = 'img/avatar-' + window.utils.generateRandomNumber(1, 6) + '.svg';
       commentTemplate.querySelector('.social__text').textContent = data[0].comments[i];
@@ -85,6 +85,8 @@
     };
   };
 
-
   window.load(URL, onSuccess, onError);
+  window.photos = {
+    template: template
+  };
 }());

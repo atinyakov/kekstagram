@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var SPACE_KEYCODE = 32;
   var SCALE_LINE_LENGTH = 450;
   var PERCENTS_100 = 100;
 
@@ -16,7 +15,9 @@
   var filterScale = uploadForm.querySelector('.scale__level');
   var filters = uploadForm.querySelector('.effects__list');
   var imagePreview = uploadForm.querySelector('.img-upload__preview');
-  var submitButton = uploadForm.querySelector('#upload-submit');
+
+  var errorMessage = window.photos.template.content.querySelector('.img-upload__message--error');
+
 
   uploadFile.addEventListener('change', function () {
     uploadOverlay.classList.remove('hidden');
@@ -56,25 +57,66 @@
   // --------------HASHTAGS---------------------------
   var hashtagInput = uploadForm.querySelector('.text__hashtags');
 
-  var hashtagCheckHandler = function () {
+  var hashtagCheckHandler = function (evt) {
     var hashtags;
-    // var regexp = /#\w+\s/gi;
 
-    hashtags = hashtagInput.value.split(' ', 5);
+    hashtags = hashtagInput.value.split(' ');
+    evt.target.setCustomValidity('');
+    evt.target.style.border = '2px solid transparent';
 
-    hashtags.forEach(function (i) {
-      if (i.match(/#\w+/) === null) {
-        hashtagInput.setCustomValidity('hashtags should start with \'#\' and splitted by \' \'');
-        // console.log('valid' + i);
-      } else {
-        console.log('valid ' + i);
+    for (var i = 0; i < hashtags.length; i++) {
+      var elem = hashtags[i];
+      if (hashtags[i] === '') {
+        evt.target.setCustomValidity('между хештегами должен быть один пробел!');
+        evt.target.style.border = '2px solid red';
+        return;
+      } else if (hashtags[i].charAt(0) !== '#') {
+        evt.target.setCustomValidity('Хеш тег должен начинаться с символа решетка: #');
+        evt.target.style.border = '2px solid red';
+        return;
+      } else if (hashtags[i] === '#') {
+        evt.target.setCustomValidity('Хештег не может состоять из одной #!');
+        evt.target.style.border = '2px solid red';
+        return;
+      } else if (hashtags[i].length > 20) {
+        evt.target.setCustomValidity('Хештег не может быть длиннее 20 символов!');
+        evt.target.style.border = '2px solid red';
+        return;
       }
-    });
-    // }
+
+      for (var j = 1; j < hashtags[i].length; j++) {
+        if (hashtags[i].charAt(j) === '#') {
+          evt.target.setCustomValidity('Хеш тег не может внутри себя содержать символ решетка: #');
+          return;
+        }
+      }
+
+      for (var k = i + 1; k < hashtags.length; k++) {
+        if (elem === hashtags[k]) {
+          evt.target.setCustomValidity('нельзя использовать одинаковые хештеги!');
+          return;
+        }
+      }
+    }
+    if (hashtags.length > 5) {
+      evt.target.setCustomValidity('Максимум 5 хештегов');
+    }
   };
 
-  hashtagInput.addEventListener('keyup', hashtagCheckHandler);
+  hashtagInput.addEventListener('change', hashtagCheckHandler);
+  // -------------------------text description --------------------------
 
+  var textDescription = uploadForm.querySelector('.text__description');
+
+  textDescription.addEventListener('change', function (evt) {
+    evt.target.setCustomValidity('');
+    evt.target.style.border = '2px solid transparent';
+    if ((evt.target.value !== '') && (evt.target.value.length > 140)) {
+      evt.target.setCustomValidity('Максимум 140 символов');
+      evt.target.style.border = '2px solid red';
+      return;
+    }
+  });
   // ---------------------------- filter drag -------------------------------
 
   filterPin.addEventListener('mousedown', function (evt) {
@@ -112,12 +154,14 @@
   // ---------------FORM_SUBMIT----------------------
 
   var onError = function (message) {
-    var errorMessage = document.querySelector('img-upload__message--error');
-    errorMessage.classlist.remove('hidden');
+    errorMessage.classList.remove('hidden');
+    errorMessage.innerText = errorMessage.innerText + ' ' + message;
+    // ?????? Как показать error ??
   };
 
   var onSuccess = function () {
-    alert('Загружено');
+    textDescription.value = '';
+    hashtagInput.value = '';
     window.pictures.closePopup();
   };
 

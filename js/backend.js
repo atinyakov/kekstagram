@@ -47,7 +47,7 @@
       onError('Запрос не успел выполниться за ' + request.timeout + 'мс');
     });
 
-    request.timeout = 10000; // 10s
+    request.timeout = 1000; // 10s
 
     request.open('POST', url);
     request.send(data);
