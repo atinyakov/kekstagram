@@ -2,44 +2,6 @@
 
 (function () {
   var commentsBlock = document.querySelector('.social__comments');
-  // var photos = [];
-  // var description = [
-  //   'Затусили с друзьями на море',
-  //   'Как же круто тут кормят',
-  //   'Отдыхаем...',
-  //   'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......',
-  //   'Вот это тачка!',
-  // ];
-  //
-  // var comments = [
-  //   'Всё отлично!',
-  //   'В целом всё неплохо. Но не всё.',
-  //   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
-  //   'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-  //   'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-  //   'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
-  // ];
-  //
-  // var PICTURES_AMOUNT = 25;
-  //
-  // var createPhoto = function (i) {
-  //   var photo = {
-  //     url: 'photos/' + ++i + '.jpg',
-  //     likes: window.utils.generateRandomNumber(15, 200),
-  //     comments: [comments[window.utils.generateRandomNumber(0, 5)], comments[window.utils.generateRandomNumber(0, 5)]],
-  //     description: description[window.utils.generateRandomNumber(0, 4)]
-  //   };
-  //   return photo;
-  // };
-  //
-  // var fillProtosArray = function () {
-  //   for (var i = 0; i < PICTURES_AMOUNT; i++) {
-  //     photos.push(createPhoto(i));
-  //   }
-  // };
-  //
-  // fillProtosArray();
-
   var template = document.querySelector('#picture');
   var imageTemplate = template.content.querySelector('.picture__link');
   var picturesBlock = document.querySelector('.pictures');
@@ -58,7 +20,6 @@
     picturesBlock.appendChild(fragment);
   };
 
-  // createElements();
   var URL = 'https://js.dump.academy/kekstagram/data';
 
   var addComments = function (data) {
@@ -75,6 +36,18 @@
   };
 
   var onError = function (message) {
+    var ERROR_TIMEOUT = 4000;
+    var errorMessage = window.photos.template.content.querySelector('.img-upload__message--error');
+    errorMessage = errorMessage.cloneNode(true);
+
+    errorMessage.classList.remove('hidden');
+    errorMessage.innerText = message;
+
+    errorMessage.style.zIndex = 2;
+    picturesBlock.appendChild(errorMessage);
+    setTimeout(function () {
+      picturesBlock.removeChild(errorMessage);
+    }, ERROR_TIMEOUT);
   };
 
   var onSuccess = function (data) {
@@ -87,6 +60,7 @@
 
   window.load(URL, onSuccess, onError);
   window.photos = {
-    template: template
+    template: template,
+    onError: onError
   };
 }());

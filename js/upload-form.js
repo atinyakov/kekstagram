@@ -16,12 +16,12 @@
   var filters = uploadForm.querySelector('.effects__list');
   var imagePreview = uploadForm.querySelector('.img-upload__preview');
 
-  var errorMessage = window.photos.template.content.querySelector('.img-upload__message--error');
-
-
   uploadFile.addEventListener('change', function () {
     uploadOverlay.classList.remove('hidden');
-    closeOverlayButton.addEventListener('mouseup', window.pictures.closePopup);
+    closeOverlayButton.addEventListener('mouseup', function () {
+      uploadFile.value = '';
+      window.pictures.closePopup();
+    });
     filterInitialX = 20;
     filterPin.style.left = filterInitialX + '%';
     filterScale.style.width = filterInitialX + '%';
@@ -153,25 +153,20 @@
 
   // ---------------FORM_SUBMIT----------------------
 
-  var onError = function (message) {
-    errorMessage.classList.remove('hidden');
-    errorMessage.innerText = errorMessage.innerText + ' ' + message;
-    // ?????? Как показать error ??
-  };
-
   var onSuccess = function () {
     textDescription.value = '';
     hashtagInput.value = '';
+    uploadFile.value = '';
     window.pictures.closePopup();
   };
 
   uploadForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    // evt.checkValidity();
 
     var SERVER_URL = 'https://js.dump.academy/kekstagram';
 
     var formData = new FormData(uploadForm);
-    window.send(formData, SERVER_URL, onSuccess, onError);
+
+    window.send(formData, SERVER_URL, onSuccess, window.photos.onError);
   });
 }());
