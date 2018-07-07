@@ -14,14 +14,24 @@
   var filterScalePlaceholder = uploadForm.querySelector('.img-upload__scale');
   var filterScale = uploadForm.querySelector('.scale__level');
   var filters = uploadForm.querySelector('.effects__list');
-  var imagePreview = uploadForm.querySelector('.img-upload__preview');
+
+  var scaleMinus = uploadForm.querySelector('.resize__control--minus');
+  var scalePlus = uploadForm.querySelector('.resize__control--plus');
+  var scaleValue = uploadForm.querySelector('.resize__control--value');
 
   uploadFile.addEventListener('change', function () {
     uploadOverlay.classList.remove('hidden');
+
+    scaleMinus.addEventListener('mouseup', onScaleChange);
+    scalePlus.addEventListener('mouseup', onScaleChange);
+
     closeOverlayButton.addEventListener('mouseup', function () {
       uploadFile.value = '';
+      scaleMinus.removeEventListener('mouseup', onScaleChange);
+      scalePlus.removeEventListener('mouseup', onScaleChange);
       window.pictures.closePopup();
     });
+
     filterInitialX = 20;
     filterPin.style.left = filterInitialX + '%';
     filterScale.style.width = filterInitialX + '%';
@@ -46,10 +56,10 @@
 
 
   filters.addEventListener('mouseup', function (evt) {
-    imagePreview.className = 'img-upload__preview';
+    imgPreview.className = 'img-upload__preview';
     imgPreview.style.filter = '';
     var currentEffect = evt.target.classList[1];
-    imagePreview.classList.add(currentEffect);
+    imgPreview.classList.add(currentEffect);
     defineFilterRatio(filterScale.style.width.slice(0, -1));
   });
 
@@ -165,4 +175,25 @@
 
     window.send(formData, SERVER_URL, onSuccess, window.photos.onError);
   });
+
+  // --------------------SCALE ---------------------------
+  var currentScale;
+  var MAX_SCALE = 100; // %
+  var step = 25;
+  var MIN_SCALE = 25; // %
+
+  var onScaleChange = function (evt) {
+    currentScale = scaleValue.value.slice(0, -1);
+    if (evt.target.classList.contains('resize__control--minus')) {
+      currentScale = currentScale - step;
+    }
+    if (evt.target.classList.contains('resize__control--plus')) {
+      currentScale = +currentScale + step;
+    }
+    if ((MIN_SCALE <= currentScale) && (currentScale <= MAX_SCALE)) {
+      scaleValue.value = currentScale + '%';
+      imgPreview.style.transform = 'scale(' + currentScale / 100 + ')';
+    }
+  };
+
 }());
