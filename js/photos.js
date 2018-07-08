@@ -10,15 +10,16 @@
   var imgFiltersButtons = imgFiltersBlock.querySelector('.img-filters__form');
   var ERROR_TIMEOUT = 4000;
   var COMMENTS_AMOUNT = 5;
-  var oldImages;
+
 
   var createElements = function (data, amount) {
     var fragment = document.createDocumentFragment();
     amount = amount ? amount : data.length;
 
-    if (oldImages) {
-      picturesBlock.removeChild(oldImages);
-    }
+    var images = document.querySelectorAll('.picture__link');
+    [].forEach.call(images, function (el) {
+      picturesBlock.removeChild(el);
+    });
 
     for (var i = 0; i < amount; i++) {
       var image = imageTemplate.cloneNode(true);
@@ -27,8 +28,6 @@
       image.querySelector('.picture__stat--comments').textContent = data[i].comments.length;
       fragment.appendChild(image);
     }
-
-    oldImages = fragment;
 
     picturesBlock.appendChild(fragment);
   };
