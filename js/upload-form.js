@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var SPACE_KEYCODE = 32;
   var SCALE_LINE_LENGTH = 450;
   var PERCENTS_100 = 100;
 
@@ -15,11 +14,24 @@
   var filterScalePlaceholder = uploadForm.querySelector('.img-upload__scale');
   var filterScale = uploadForm.querySelector('.scale__level');
   var filters = uploadForm.querySelector('.effects__list');
-  var imagePreview = uploadForm.querySelector('.img-upload__preview');
+
+  var scaleMinus = uploadForm.querySelector('.resize__control--minus');
+  var scalePlus = uploadForm.querySelector('.resize__control--plus');
+  var scaleValue = uploadForm.querySelector('.resize__control--value');
 
   uploadFile.addEventListener('change', function () {
     uploadOverlay.classList.remove('hidden');
-    closeOverlayButton.addEventListener('mouseup', window.pictures.closeUploadOverlay);
+
+    scaleMinus.addEventListener('mouseup', onScaleChange);
+    scalePlus.addEventListener('mouseup', onScaleChange);
+
+    closeOverlayButton.addEventListener('mouseup', function () {
+      uploadFile.value = '';
+      scaleMinus.removeEventListener('mouseup', onScaleChange);
+      scalePlus.removeEventListener('mouseup', onScaleChange);
+      window.pictures.closePopup();
+    });
+
     filterInitialX = 20;
     filterPin.style.left = filterInitialX + '%';
     filterScale.style.width = filterInitialX + '%';
@@ -44,10 +56,10 @@
 
 
   filters.addEventListener('mouseup', function (evt) {
-    imagePreview.className = 'img-upload__preview';
+    imgPreview.className = 'img-upload__preview';
     imgPreview.style.filter = '';
     var currentEffect = evt.target.classList[1];
-    imagePreview.classList.add(currentEffect);
+    imgPreview.classList.add(currentEffect);
     defineFilterRatio(filterScale.style.width.slice(0, -1));
   });
 
@@ -56,22 +68,64 @@
   var hashtagInput = uploadForm.querySelector('.text__hashtags');
 
   var hashtagCheckHandler = function (evt) {
+    var HASHTAGS_MAX = 5;
+    var HASHTAG_LENGTH = 20;
     var hashtags;
 
-    if (evt.keyCode === SPACE_KEYCODE) {
-      hashtags = hashtagInput.value.split(' ', 5);
+    hashtags = hashtagInput.value.split(' ');
+    evt.target.setCustomValidity('');
+    evt.target.classList.remove('error__input');
 
-      hashtags.forEach(function (i) {
-        var regexp = /^#\w+$/;
-        if (i.search(regexp) === -1) {
-          hashtagInput.setCustomValidity('Pattern mismatch');
+    for (var i = 0; i < hashtags.length; i++) {
+      var elem = hashtags[i];
+      if (hashtags[i] === '') {
+        evt.target.setCustomValidity('между хештегами должен быть один пробел!');
+        evt.target.classList.add('error__input');
+      } else if (hashtags[i].charAt(0) !== '#') {
+        evt.target.setCustomValidity('Хеш тег должен начинаться с символа решетка: #');
+        evt.target.classList.add('error__input');
+      } else if (hashtags[i] === '#') {
+        evt.target.setCustomValidity('Хештег не может состоять из одной #!');
+        evt.target.classList.add('error__input');
+      } else if (hashtags[i].length > HASHTAG_LENGTH) {
+        evt.target.setCustomValidity('Хештег не может быть длиннее 20 символов!');
+        evt.target.classList.add('error__input');
+      }
+
+      for (var j = 1; j < hashtags[i].length; j++) {
+        if (hashtags[i].charAt(j) === '#') {
+          evt.target.setCustomValidity('Хеш тег не может внутри себя содержать символ решетка: #');
+          evt.target.classList.add('error__input');
         }
-      });
+      }
+
+      for (var k = i + 1; k < hashtags.length; k++) {
+        if (elem === hashtags[k]) {
+          evt.target.setCustomValidity('нельзя использовать одинаковые хештеги!');
+          evt.target.classList.add('error__input');
+        }
+      }
+    }
+    if (hashtags.length > HASHTAGS_MAX) {
+      evt.target.setCustomValidity('Максимум 5 хештегов');
+      evt.target.classList.add('error__input');
     }
   };
 
-  hashtagInput.addEventListener('keyup', hashtagCheckHandler);
+  hashtagInput.addEventListener('change', hashtagCheckHandler);
+  // -------------------------text description --------------------------
 
+  var textDescription = uploadForm.querySelector('.text__description');
+
+  textDescription.addEventListener('change', function (evt) {
+    evt.target.setCustomValidity('');
+    evt.target.style.border = '2px solid transparent';
+    if ((evt.target.value !== '') && (evt.target.value.length > 140)) {
+      evt.target.setCustomValidity('Максимум 140 символов');
+      evt.target.style.border = '2px solid red';
+      return;
+    }
+  });
   // ---------------------------- filter drag -------------------------------
 
   filterPin.addEventListener('mousedown', function (evt) {
@@ -105,4 +159,44 @@
     document.addEventListener('mousemove', mouseMoveHandler);
     document.addEventListener('mouseup', mouseUpHandler);
   });
+
+  // ---------------FORM_SUBMIT----------------------
+
+  var onSuccess = function () {
+    textDescription.value = '';
+    hashtagInput.value = '';
+    uploadFile.value = '';
+    window.pictures.closePopup();
+  };
+
+  uploadForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+
+    var SERVER_URL = 'https://js.dump.academy/kekstagram';
+
+    var formData = new FormData(uploadForm);
+
+    window.send(formData, SERVER_URL, onSuccess, window.photos.onError);
+  });
+
+  // --------------------SCALE ---------------------------
+  var currentScale;
+  var MAX_SCALE = 100; // %
+  var step = 25;
+  var MIN_SCALE = 25; // %
+
+  var onScaleChange = function (evt) {
+    currentScale = scaleValue.value.slice(0, -1);
+    if (evt.target.classList.contains('resize__control--minus')) {
+      currentScale = currentScale - step;
+    }
+    if (evt.target.classList.contains('resize__control--plus')) {
+      currentScale = +currentScale + step;
+    }
+    if ((MIN_SCALE <= currentScale) && (currentScale <= MAX_SCALE)) {
+      scaleValue.value = currentScale + '%';
+      imgPreview.style.transform = 'scale(' + currentScale / 100 + ')';
+    }
+  };
+
 }());

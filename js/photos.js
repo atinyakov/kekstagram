@@ -1,66 +1,95 @@
 'use strict';
 
 (function () {
-  var photos = [];
-  var description = [
-    'Затусили с друзьями на море',
-    'Как же круто тут кормят',
-    'Отдыхаем...',
-    'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......',
-    'Вот это тачка!',
-  ];
-
-  var comments = [
-    'Всё отлично!',
-    'В целом всё неплохо. Но не всё.',
-    'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
-    'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
-    'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-    'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!',
-  ];
-
-  var PICTURES_AMOUNT = 25;
-
-  var createPhoto = function (i) {
-    var photo = {
-      url: 'photos/' + ++i + '.jpg',
-      likes: window.utils.generateRandomNumber(15, 200),
-      comments: [comments[window.utils.generateRandomNumber(0, 5)], comments[window.utils.generateRandomNumber(0, 5)]],
-      description: description[window.utils.generateRandomNumber(0, 4)]
-    };
-    return photo;
-  };
-
-  var fillProtosArray = function () {
-    for (var i = 0; i < PICTURES_AMOUNT; i++) {
-      photos.push(createPhoto(i));
-    }
-  };
-
-  fillProtosArray();
-
+  var commentsBlock = document.querySelector('.social__comments');
   var template = document.querySelector('#picture');
   var imageTemplate = template.content.querySelector('.picture__link');
   var picturesBlock = document.querySelector('.pictures');
+  var imgFiltersBlock = document.querySelector('.img-filters');
+  var imgFilters = imgFiltersBlock.querySelector('.img-filters__form');
+  var imgFiltersButtons = imgFiltersBlock.querySelector('.img-filters__form');
+  var ERROR_TIMEOUT = 4000;
+  var COMMENTS_AMOUNT = 5;
 
-  var createElements = function () {
+
+  var createElements = function (data, amount) {
     var fragment = document.createDocumentFragment();
+    amount = amount ? amount : data.length;
 
-    for (var i = 0; i < photos.length; i++) {
+    var images = document.querySelectorAll('.picture__link');
+    [].forEach.call(images, function (el) {
+      picturesBlock.removeChild(el);
+    });
+
+    for (var i = 0; i < amount; i++) {
       var image = imageTemplate.cloneNode(true);
-      image.querySelector('.picture__img').src = photos[i].url;
-      image.querySelector('.picture__stat--likes').textContent = photos[i].likes;
-      image.querySelector('.picture__stat--comments').textContent = photos[i].comments.length;
+      image.querySelector('.picture__img').src = data[i].url;
+      image.querySelector('.picture__stat--likes').textContent = data[i].likes;
+      image.querySelector('.picture__stat--comments').textContent = data[i].comments.length;
       fragment.appendChild(image);
     }
 
     picturesBlock.appendChild(fragment);
   };
 
-  createElements();
+  var URL = 'https://js.dump.academy/kekstagram/data';
 
-  window.data = {
-    photos: photos
+  var addComments = function (data) {
+    var commentsFragment = document.createDocumentFragment();
+    for (var i = 0; i < COMMENTS_AMOUNT; i++) {
+      var commentTemplate = commentsBlock.querySelector('.social__comment').cloneNode(true);
+      commentTemplate.querySelector('.social__picture').src = 'img/avatar-' + window.utils.generateRandomNumber(1, 6) + '.svg';
+      commentTemplate.querySelector('.social__text').textContent = data[0].comments[i];
+      commentsFragment.appendChild(commentTemplate);
+    }
+    commentsBlock.innerHTML = '';
+    commentsBlock.appendChild(commentsFragment);
   };
 
+  var onError = function (message) {
+    var errorMessage = window.photos.template.content.querySelector('.img-upload__message--error');
+    errorMessage = errorMessage.cloneNode(true);
+
+    errorMessage.classList.remove('hidden');
+    errorMessage.innerText = message;
+
+    picturesBlock.appendChild(errorMessage);
+    setTimeout(function () {
+      picturesBlock.removeChild(errorMessage);
+    }, ERROR_TIMEOUT);
+  };
+
+
+  var onSuccess = function (data) {
+    createElements(data);
+    addComments(data);
+    imgFiltersBlock.classList.remove('img-filters--inactive');
+    window.photos = {
+      data: data
+    };
+  };
+
+  imgFilters.addEventListener('mouseup', function (evt) {
+
+    [].forEach.call(imgFiltersButtons, function (el) {
+      el.classList.remove('img-filters__button--active');
+    });
+
+    if (evt.target.id === 'filter-popular') {
+      createElements(window.photos.data);
+    } else if (evt.target.id === 'filter-new') {
+      createElements(window.photos.data, 10);
+    } else if (evt.target.id === 'filter-discussed') {
+      createElements(window.photos.data);
+    }
+
+    evt.target.classList.add('img-filters__button--active');
+  });
+
+
+  window.load(URL, onSuccess, onError);
+  window.photos = {
+    template: template,
+    onError: onError
+  };
 }());

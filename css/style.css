@@ -328,6 +328,8 @@ main {
   border: none;
 }
 
+
+
 .img-upload__label {
   position: absolute;
 
@@ -455,7 +457,7 @@ main {
 
 .img-upload__message--error {
   padding-top: 275px;
-
+  z-index: 2;
   font-family: "Open Sans", "Arial", sans-serif;
   font-weight: 400;
   text-transform: none;
@@ -476,6 +478,10 @@ main {
   -webkit-transform: translateX(-50%);
       -ms-transform: translateX(-50%);
           transform: translateX(-50%);
+}
+
+.error__input {
+  border: 2px solid red;
 }
 
 .error__links {
