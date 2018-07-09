@@ -11,6 +11,25 @@
   var ERROR_TIMEOUT = 4000;
   var COMMENTS_AMOUNT = 5;
 
+  var addComments = function (data) {
+    var commentsFragment = document.createDocumentFragment();
+
+    var commentsToAdd = 5;
+
+    if (data.comments.length < COMMENTS_AMOUNT) {
+      commentsToAdd = data.comments.length;
+    }
+
+    for (var i = 0; i < commentsToAdd; i++) {
+      var commentTemplate = commentsBlock.querySelector('.social__comment').cloneNode(true);
+      commentTemplate.querySelector('.social__picture').src = 'img/avatar-' + window.utils.generateRandomNumber(1, 6) + '.svg';
+      commentTemplate.querySelector('.social__text').textContent = data.comments[i];
+      commentsFragment.appendChild(commentTemplate);
+    }
+    commentsBlock.innerHTML = '';
+    commentsBlock.appendChild(commentsFragment);
+  };
+
 
   var createElements = function (data, amount) {
     var fragment = document.createDocumentFragment();
@@ -27,6 +46,7 @@
       image.querySelector('.picture__stat--likes').textContent = data[i].likes;
       image.querySelector('.picture__stat--comments').textContent = data[i].comments.length;
       fragment.appendChild(image);
+      addComments(data[i]);
     }
 
     picturesBlock.appendChild(fragment);
@@ -34,17 +54,6 @@
 
   var URL = 'https://js.dump.academy/kekstagram/data';
 
-  var addComments = function (data) {
-    var commentsFragment = document.createDocumentFragment();
-    for (var i = 0; i < COMMENTS_AMOUNT; i++) {
-      var commentTemplate = commentsBlock.querySelector('.social__comment').cloneNode(true);
-      commentTemplate.querySelector('.social__picture').src = 'img/avatar-' + window.utils.generateRandomNumber(1, 6) + '.svg';
-      commentTemplate.querySelector('.social__text').textContent = data[0].comments[i];
-      commentsFragment.appendChild(commentTemplate);
-    }
-    commentsBlock.innerHTML = '';
-    commentsBlock.appendChild(commentsFragment);
-  };
 
   var onError = function (message) {
     var errorMessage = window.photos.template.content.querySelector('.img-upload__message--error');
@@ -62,14 +71,14 @@
 
   var onSuccess = function (data) {
     createElements(data);
-    addComments(data);
+
     imgFiltersBlock.classList.remove('img-filters--inactive');
     window.photos = {
       data: data
     };
   };
 
-  imgFilters.addEventListener('mouseup', function (evt) {
+  var onFilterchange = function (evt) {
 
     [].forEach.call(imgFiltersButtons, function (el) {
       el.classList.remove('img-filters__button--active');
@@ -80,10 +89,24 @@
     } else if (evt.target.id === 'filter-new') {
       createElements(window.photos.data, 10);
     } else if (evt.target.id === 'filter-discussed') {
-      createElements(window.photos.data);
+      var mostDiscussed = window.photos.data.sort(function (first, second) {
+        if (first.comments.length > second.comments.length) {
+          return -1;
+        } else if (first.comments.length < second.comments.length) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+      createElements(mostDiscussed);
     }
 
     evt.target.classList.add('img-filters__button--active');
+  };
+
+  var DEBOUNCE_INTERVAL = 500;
+  imgFilters.addEventListener('mouseup', function (evt) {
+    window.utils.debounce(onFilterchange(evt), DEBOUNCE_INTERVAL);
   });
 
 

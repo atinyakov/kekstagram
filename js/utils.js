@@ -9,6 +9,14 @@ window.utils = (function () {
     },
     mathClamp: function (min, mid, max) {
       return Math.min(Math.max(min, mid), max);
+    },
+    debounce: function (func, interval) {
+      var lastTimeout;
+
+      return function () {
+        clearTimeout(lastTimeout);
+        lastTimeout = setTimeout(func, interval);
+      };
     }
   };
 }());
