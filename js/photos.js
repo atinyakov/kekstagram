@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-  var commentsBlock = document.querySelector('.social__comments');
   var template = document.querySelector('#picture');
   var imageTemplate = template.content.querySelector('.picture__link');
   var picturesBlock = document.querySelector('.pictures');
@@ -9,26 +8,6 @@
   var imgFilters = imgFiltersBlock.querySelector('.img-filters__form');
   var imgFiltersButtons = imgFiltersBlock.querySelector('.img-filters__form');
   var ERROR_TIMEOUT = 4000;
-  var COMMENTS_AMOUNT = 5;
-
-  var addComments = function (data) {
-    var commentsFragment = document.createDocumentFragment();
-
-    var commentsToAdd = 5;
-
-    if (data.comments.length < COMMENTS_AMOUNT) {
-      commentsToAdd = data.comments.length;
-    }
-
-    for (var i = 0; i < commentsToAdd; i++) {
-      var commentTemplate = commentsBlock.querySelector('.social__comment').cloneNode(true);
-      commentTemplate.querySelector('.social__picture').src = 'img/avatar-' + window.utils.generateRandomNumber(1, 6) + '.svg';
-      commentTemplate.querySelector('.social__text').textContent = data.comments[i];
-      commentsFragment.appendChild(commentTemplate);
-    }
-    commentsBlock.innerHTML = '';
-    commentsBlock.appendChild(commentsFragment);
-  };
 
 
   var createElements = function (data, amount) {
@@ -46,7 +25,6 @@
       image.querySelector('.picture__stat--likes').textContent = data[i].likes;
       image.querySelector('.picture__stat--comments').textContent = data[i].comments.length;
       fragment.appendChild(image);
-      addComments(data[i]);
     }
 
     picturesBlock.appendChild(fragment);
@@ -104,10 +82,12 @@
     evt.target.classList.add('img-filters__button--active');
   };
 
+  function onClick(evt) {
+    onFilterchange(evt);
+  }
+
   var DEBOUNCE_INTERVAL = 500;
-  imgFilters.addEventListener('mouseup', function (evt) {
-    window.utils.debounce(onFilterchange(evt), DEBOUNCE_INTERVAL);
-  });
+  imgFilters.addEventListener('mouseup', window.utils.debounce(onClick, DEBOUNCE_INTERVAL));
 
 
   window.load(URL, onSuccess, onError);

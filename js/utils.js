@@ -13,9 +13,11 @@ window.utils = (function () {
     debounce: function (func, interval) {
       var lastTimeout;
 
-      return function () {
+      return function (evt) {
         clearTimeout(lastTimeout);
-        lastTimeout = setTimeout(func, interval);
+        lastTimeout = setTimeout(function () {
+          func(evt);
+        }, interval);
       };
     }
   };
