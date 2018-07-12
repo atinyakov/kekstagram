@@ -19,6 +19,15 @@ window.utils = (function () {
           func(evt);
         }, interval);
       };
+    },
+    sortMostToLeast: function (first, second) {
+      if (first.comments.length > second.comments.length) {
+        return -1;
+      } else if (first.comments.length < second.comments.length) {
+        return 1;
+      } else {
+        return 0;
+      }
     }
   };
 }());

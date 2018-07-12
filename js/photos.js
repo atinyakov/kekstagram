@@ -67,15 +67,7 @@
     } else if (evt.target.id === 'filter-new') {
       createElements(window.photos.data, 10);
     } else if (evt.target.id === 'filter-discussed') {
-      var mostDiscussed = window.photos.data.sort(function (first, second) {
-        if (first.comments.length > second.comments.length) {
-          return -1;
-        } else if (first.comments.length < second.comments.length) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
+      var mostDiscussed = window.photos.data.sort(window.utils.sortMostToLeast);
       createElements(mostDiscussed);
     }
 
