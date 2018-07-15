@@ -123,7 +123,8 @@
 
   pictures.addEventListener('mouseup', openPicture);
 
-  window.pictures = {
-    closePopup: closePopup
+  window.popup = {
+    closePopup: closePopup,
+    ESC_KEYCODE: ESC_KEYCODE
   };
 })();
