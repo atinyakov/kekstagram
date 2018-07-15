@@ -8,6 +8,7 @@
   var overlays = document.querySelectorAll('.overlay');
   var cancelButtons = document.querySelectorAll('.cancel');
   var ESC_KEYCODE = 27;
+  var ENTER_KEYCODE = 13;
 
   var hideElement = function (elem) {
     document.querySelector(elem).classList.add('visually-hidden');
@@ -125,6 +126,7 @@
 
   window.popup = {
     closePopup: closePopup,
-    ESC_KEYCODE: ESC_KEYCODE
+    ESC_KEYCODE: ESC_KEYCODE,
+    ENTER_KEYCODE: ENTER_KEYCODE
   };
 })();

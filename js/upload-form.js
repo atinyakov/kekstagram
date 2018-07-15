@@ -14,6 +14,7 @@
   var filterScalePlaceholder = uploadForm.querySelector('.img-upload__scale');
   var filterScale = uploadForm.querySelector('.scale__level');
   var filters = uploadForm.querySelector('.effects__list');
+  var textDescription = uploadForm.querySelector('.text__description');
 
   var scaleMinus = uploadForm.querySelector('.resize__control--minus');
   var scalePlus = uploadForm.querySelector('.resize__control--plus');
@@ -21,12 +22,12 @@
 
   uploadFile.addEventListener('change', function () {
     uploadOverlay.classList.remove('hidden');
-
+    var LEFT_MOUSE_BUTTON = 0;
     scaleMinus.addEventListener('mouseup', onScaleChange);
     scalePlus.addEventListener('mouseup', onScaleChange);
 
     var closeUpload = function (evt) {
-      if ((evt.keyCode === window.popup.ESC_KEYCODE) || (evt.target === closeOverlayButton)) {
+      if ((evt.target !== textDescription) && (evt.keyCode === window.popup.ESC_KEYCODE || (evt.target === closeOverlayButton && evt.buttons === LEFT_MOUSE_BUTTON) || (evt.target === closeOverlayButton && evt.keycode === window.popup.ENTER_KEYCODE))) {
         uploadFile.value = '';
         imgPreview.classList = 'img-upload__preview';
         imgPreview.style = '';
@@ -34,11 +35,13 @@
         scalePlus.removeEventListener('mouseup', onScaleChange);
         window.popup.closePopup();
         closeOverlayButton.removeEventListener('mouseup', closeUpload);
+        closeOverlayButton.removeEventListener('keyup', closeUpload);
         window.removeEventListener('keyup', closeUpload);
       }
     };
 
     closeOverlayButton.addEventListener('mouseup', closeUpload);
+    closeOverlayButton.addEventListener('keyup', closeUpload);
 
     window.addEventListener('keyup', closeUpload);
 
@@ -124,8 +127,6 @@
 
   hashtagInput.addEventListener('change', hashtagCheckHandler);
   // -------------------------text description --------------------------
-
-  var textDescription = uploadForm.querySelector('.text__description');
 
   textDescription.addEventListener('change', function (evt) {
     evt.target.setCustomValidity('');
