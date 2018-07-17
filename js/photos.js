@@ -1,14 +1,15 @@
 'use strict';
 
 (function () {
+  var ERROR_TIMEOUT = 4000;
+  var URL = 'https://js.dump.academy/kekstagram/data';
+  var DEBOUNCE_INTERVAL = 500;
   var template = document.querySelector('#picture');
   var imageTemplate = template.content.querySelector('.picture__link');
   var picturesBlock = document.querySelector('.pictures');
   var imgFiltersBlock = document.querySelector('.img-filters');
   var imgFilters = imgFiltersBlock.querySelector('.img-filters__form');
   var imgFiltersButtons = imgFiltersBlock.querySelector('.img-filters__form');
-  var ERROR_TIMEOUT = 4000;
-
 
   var createElements = function (data, amount) {
     var fragment = document.createDocumentFragment();
@@ -29,8 +30,6 @@
 
     picturesBlock.appendChild(fragment);
   };
-
-  var URL = 'https://js.dump.academy/kekstagram/data';
 
 
   var onError = function (message) {
@@ -78,7 +77,6 @@
     onFilterchange(evt);
   }
 
-  var DEBOUNCE_INTERVAL = 500;
   imgFilters.addEventListener('mouseup', window.utils.debounce(onClick, DEBOUNCE_INTERVAL));
 
 

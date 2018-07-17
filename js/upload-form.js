@@ -3,6 +3,10 @@
 (function () {
   var SCALE_LINE_LENGTH = 450;
   var PERCENTS_100 = 100;
+  var LEFT_MOUSE_BUTTON = 0;
+  var SERVER_URL = 'https://js.dump.academy/kekstagram';
+  var MAX_SCALE = 100; // %
+  var MIN_SCALE = 25; // %
 
   var uploadForm = document.querySelector('.img-upload__form');
   var imgPreview = uploadForm.querySelector('.img-upload__preview');
@@ -20,9 +24,13 @@
   var scalePlus = uploadForm.querySelector('.resize__control--plus');
   var scaleValue = uploadForm.querySelector('.resize__control--value');
 
+  var currentScale;
+  var step = 25;
+
+  var hashtagInput = uploadForm.querySelector('.text__hashtags');
+
   uploadFile.addEventListener('change', function () {
     uploadOverlay.classList.remove('hidden');
-    var LEFT_MOUSE_BUTTON = 0;
     scaleMinus.addEventListener('mouseup', onScaleChange);
     scalePlus.addEventListener('mouseup', onScaleChange);
 
@@ -78,7 +86,6 @@
 
 
   // --------------HASHTAGS---------------------------
-  var hashtagInput = uploadForm.querySelector('.text__hashtags');
 
   var hashtagCheckHandler = function (evt) {
     var HASHTAGS_MAX = 5;
@@ -183,18 +190,12 @@
   uploadForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
 
-    var SERVER_URL = 'https://js.dump.academy/kekstagram';
-
     var formData = new FormData(uploadForm);
 
     window.send(formData, SERVER_URL, onSuccess, window.photos.onError);
   });
 
   // --------------------SCALE ---------------------------
-  var currentScale;
-  var MAX_SCALE = 100; // %
-  var step = 25;
-  var MIN_SCALE = 25; // %
 
   var onScaleChange = function (evt) {
     currentScale = scaleValue.value.slice(0, -1);

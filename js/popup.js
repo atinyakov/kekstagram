@@ -1,14 +1,16 @@
 'use strict';
 
 (function () {
+  var ESC_KEYCODE = 27;
+  var ENTER_KEYCODE = 13;
+  var COMMENTS_AMOUNT = 5;
   var bigPicture = document.querySelector('.big-picture');
-
   var pictures = document.querySelector('.pictures.container');
   var closeBigPicture = bigPicture.querySelector('.big-picture__cancel');
   var overlays = document.querySelectorAll('.overlay');
   var cancelButtons = document.querySelectorAll('.cancel');
-  var ESC_KEYCODE = 27;
-  var ENTER_KEYCODE = 13;
+  var loadmoreButton = document.querySelector('.social__loadmore');
+
 
   var hideElement = function (elem) {
     document.querySelector(elem).classList.add('visually-hidden');
@@ -52,7 +54,6 @@
     document.addEventListener('keyup', onKeyPress);
   };
 
-  var COMMENTS_AMOUNT = 5;
   var commentsBlock = document.querySelector('.social__comments');
 
   var addComments = function (j) {
@@ -78,7 +79,6 @@
 
       commentsBlock.appendChild(commentsFragment);
     };
-    var loadmoreButton = document.querySelector('.social__loadmore');
 
     var onloadMore = function () {
       commentsToAdd += 5;
