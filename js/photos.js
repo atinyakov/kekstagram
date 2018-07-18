@@ -10,6 +10,7 @@
   var imgFiltersBlock = document.querySelector('.img-filters');
   var imgFilters = imgFiltersBlock.querySelector('.img-filters__form');
   var imgFiltersButtons = imgFiltersBlock.querySelector('.img-filters__form');
+  var mostDiscussed;
 
   var createElements = function (data, amount) {
     var fragment = document.createDocumentFragment();
@@ -57,6 +58,7 @@
 
   var onFilterchange = function (evt) {
 
+    mostDiscussed = window.photos.data.slice();
     [].forEach.call(imgFiltersButtons, function (el) {
       el.classList.remove('img-filters__button--active');
     });
@@ -66,7 +68,8 @@
     } else if (evt.target.id === 'filter-new') {
       createElements(window.photos.data, 10);
     } else if (evt.target.id === 'filter-discussed') {
-      var mostDiscussed = window.photos.data.sort(window.utils.sortMostToLeast);
+
+      mostDiscussed.sort(window.utils.sortMostToLeast);
       createElements(mostDiscussed);
     }
 
