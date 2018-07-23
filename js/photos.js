@@ -56,7 +56,7 @@
     };
   };
 
-  var onFilterchange = function (evt) {
+  var onFilterChange = function (evt) {
 
     mostDiscussed = window.photos.data.slice();
     [].forEach.call(imgFiltersButtons, function (el) {
@@ -68,7 +68,6 @@
     } else if (evt.target.id === 'filter-new') {
       createElements(window.photos.data, 10);
     } else if (evt.target.id === 'filter-discussed') {
-
       mostDiscussed.sort(window.utils.sortMostToLeast);
       createElements(mostDiscussed);
     }
@@ -77,7 +76,7 @@
   };
 
   function onClick(evt) {
-    onFilterchange(evt);
+    onFilterChange(evt);
   }
 
   imgFilters.addEventListener('mouseup', window.utils.debounce(onClick, DEBOUNCE_INTERVAL));

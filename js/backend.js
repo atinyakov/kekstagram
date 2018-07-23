@@ -36,7 +36,8 @@
 
     request.addEventListener('load', function () {
       if (request.status === OK_RESPONCE) {
-        onSuccess(request.response);
+        // onSuccess(request.response);
+        onSuccess(OK_RESPONCE);
       } else {
         onError('Cтатус ответа: ' + request.status + ' ' + request.statusText);
       }
@@ -54,5 +55,9 @@
 
     request.open('POST', url);
     request.send(data);
+  };
+
+  window.backend = {
+    OK_RESPONCE: OK_RESPONCE
   };
 })();
