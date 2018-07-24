@@ -7,9 +7,8 @@
   var bigPicture = document.querySelector('.big-picture');
   var pictures = document.querySelector('.pictures.container');
   var closeBigPicture = bigPicture.querySelector('.big-picture__cancel');
-  // var overlays = document.querySelectorAll('.overlay');
-  // var cancelButtons = document.querySelectorAll('.cancel');
   var loadmoreButton = document.querySelector('.social__loadmore');
+  var commentsBlock = document.querySelector('.social__comments');
 
 
   var hideElement = function (elem) {
@@ -22,15 +21,6 @@
 
 
   var closePopup = function () {
-    // [].forEach.call(overlays, function (el) {
-    //   el.classList.add('hidden');
-    //   el.value = '';
-    // });
-    //
-    // [].forEach.call(cancelButtons, function (el) {
-    //   el.removeEventListener('mouseup', closePopup);
-    //   el.removeEventListener('mouseup', openPicture);
-    // });
 
     bigPicture.classList.add('hidden');
     bigPicture.value = '';
@@ -58,7 +48,6 @@
     document.addEventListener('keyup', onKeyPress);
   };
 
-  var commentsBlock = document.querySelector('.social__comments');
 
   var addComments = function (j) {
     var commentsFragment = document.createDocumentFragment();
@@ -129,7 +118,6 @@
   pictures.addEventListener('mouseup', openPicture);
 
   window.popup = {
-    // closePopup: closePopup,
     ESC_KEYCODE: ESC_KEYCODE,
     ENTER_KEYCODE: ENTER_KEYCODE
   };
