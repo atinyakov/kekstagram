@@ -40,7 +40,6 @@
 
     closeOverlayButton.removeEventListener('mouseup', onOverlayClick);
     document.removeEventListener('keyup', onDocumentKeyUp);
-    // window.removeEventListener('keyup', closeUpload);
   };
 
 
@@ -64,7 +63,6 @@
     closeOverlayButton.addEventListener('mouseup', onOverlayClick);
     document.addEventListener('keyup', onDocumentKeyUp);
 
-    // window.addEventListener('keyup', closeUpload);
 
     filterPin.style.left = FILTER_INITIAL_X + '%';
     filterScale.style.width = FILTER_INITIAL_X + '%';

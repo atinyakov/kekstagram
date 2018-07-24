@@ -26,7 +26,7 @@
     bigPicture.value = '';
     closeBigPicture.removeEventListener('mouseup', closePopup);
 
-    document.removeEventListener('keyup', onKeyPress); // тоже удалить?
+    document.removeEventListener('keyup', onKeyPress);
   };
 
   var onKeyPress = function (evt) {
