@@ -4,7 +4,7 @@
   var OK_RESPONCE = 200;
   var TIMEOUT = 10000; // 10 seconds
 
-  window.load = function (url, onSuccess, onError) {
+  var load = function (url, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
 
     xhr.responseType = 'json';
@@ -31,7 +31,7 @@
     xhr.send();
   };
 
-  window.send = function (data, url, onSuccess, onError) {
+  var send = function (data, url, onSuccess, onError) {
     var request = new XMLHttpRequest();
 
     request.addEventListener('load', function () {
@@ -54,5 +54,10 @@
 
     request.open('POST', url);
     request.send(data);
+  };
+
+  window.backend = {
+    load: load,
+    send: send
   };
 })();

@@ -50,7 +50,10 @@
   };
 
   var onDocumentKeyUp = function (evt) {
-    if ((evt.target !== textDescription) && (evt.keyCode === window.popup.ESC_KEYCODE)) {
+    if (evt.keyCode !== window.popup.ESC_KEYCODE) {
+      return;
+    }
+    if ((evt.target !== textDescription) && (evt.target !== hashtagInput)) {
       closeUpload();
     }
   };
@@ -110,15 +113,18 @@
         evt.target.setCustomValidity('между хештегами должен быть один пробел!');
         evt.target.classList.add('error__input');
         return;
-      } else if (hashtags[i].charAt(0) !== '#') {
+      }
+      if (hashtags[i].charAt(0) !== '#') {
         evt.target.setCustomValidity('Хеш тег должен начинаться с символа решетка: #');
         evt.target.classList.add('error__input');
         return;
-      } else if (hashtags[i] === '#') {
+      }
+      if (hashtags[i] === '#') {
         evt.target.setCustomValidity('Хештег не может состоять из одной #!');
         evt.target.classList.add('error__input');
         return;
-      } else if (hashtags[i].length > HASHTAG_LENGTH) {
+      }
+      if (hashtags[i].length > HASHTAG_LENGTH) {
         evt.target.setCustomValidity('Хештег не может быть длиннее 20 символов!');
         evt.target.classList.add('error__input');
         return;
@@ -128,6 +134,7 @@
         if (hashtags[i].charAt(j) === '#') {
           evt.target.setCustomValidity('Хеш тег не может внутри себя содержать символ решетка: #');
           evt.target.classList.add('error__input');
+          return;
         }
       }
 
@@ -135,6 +142,7 @@
         if (elem === hashtags[k]) {
           evt.target.setCustomValidity('нельзя использовать одинаковые хештеги!');
           evt.target.classList.add('error__input');
+          return;
         }
       }
     }
@@ -204,7 +212,7 @@
 
     var formData = new FormData(uploadForm);
 
-    window.send(formData, SERVER_URL, onSuccess, window.photos.onError);
+    window.backend.send(formData, SERVER_URL, onSuccess, window.photos.onError);
   });
 
   // --------------------SCALE ---------------------------

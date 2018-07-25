@@ -82,7 +82,7 @@
   imgFilters.addEventListener('mouseup', window.utils.debounce(onClick, DEBOUNCE_INTERVAL));
 
 
-  window.load(URL, onSuccess, onError);
+  window.backend.load(URL, onSuccess, onError);
   window.photos = {
     template: template,
     onError: onError
