@@ -39,6 +39,7 @@
     scalePlus.removeEventListener('mouseup', onScaleChange);
 
     closeOverlayButton.removeEventListener('mouseup', onOverlayClick);
+    closeOverlayButton.removeEventListener('keyup', onOverlayKeyUp);
     document.removeEventListener('keyup', onDocumentKeyUp);
   };
 
@@ -50,10 +51,19 @@
   };
 
   var onDocumentKeyUp = function (evt) {
-    if (evt.keyCode !== window.popup.ESC_KEYCODE) {
+    if (evt.keyCode !== window.constants.ESC_KEYCODE) {
       return;
     }
     if ((evt.target !== textDescription) && (evt.target !== hashtagInput)) {
+      closeUpload();
+    }
+  };
+
+  var onOverlayKeyUp = function (evt) {
+    if (evt.keyCode !== window.constants.ENTER_KEYCODE) {
+      return;
+    }
+    if (evt.target === closeOverlayButton) {
       closeUpload();
     }
   };
@@ -64,6 +74,7 @@
     scalePlus.addEventListener('mouseup', onScaleChange);
 
     closeOverlayButton.addEventListener('mouseup', onOverlayClick);
+    closeOverlayButton.addEventListener('keyup', onOverlayKeyUp);
     document.addEventListener('keyup', onDocumentKeyUp);
 
 
