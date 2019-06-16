@@ -1,14 +1,16 @@
 'use strict';
 
 (function () {
+  var ERROR_TIMEOUT = 4000;
+  var URL = 'https://js.dump.academy/kekstagram/data';
+  var DEBOUNCE_INTERVAL = 500;
   var template = document.querySelector('#picture');
   var imageTemplate = template.content.querySelector('.picture__link');
   var picturesBlock = document.querySelector('.pictures');
   var imgFiltersBlock = document.querySelector('.img-filters');
   var imgFilters = imgFiltersBlock.querySelector('.img-filters__form');
   var imgFiltersButtons = imgFiltersBlock.querySelector('.img-filters__form');
-  var ERROR_TIMEOUT = 4000;
-
+  var mostDiscussed;
 
   var createElements = function (data, amount) {
     var fragment = document.createDocumentFragment();
@@ -29,8 +31,6 @@
 
     picturesBlock.appendChild(fragment);
   };
-
-  var URL = 'https://js.dump.academy/kekstagram/data';
 
 
   var onError = function (message) {
@@ -56,8 +56,9 @@
     };
   };
 
-  var onFilterchange = function (evt) {
+  var onFilterChange = function (evt) {
 
+    mostDiscussed = window.photos.data.slice();
     [].forEach.call(imgFiltersButtons, function (el) {
       el.classList.remove('img-filters__button--active');
     });
@@ -67,7 +68,7 @@
     } else if (evt.target.id === 'filter-new') {
       createElements(window.photos.data, 10);
     } else if (evt.target.id === 'filter-discussed') {
-      var mostDiscussed = window.photos.data.sort(window.utils.sortMostToLeast);
+      mostDiscussed.sort(window.utils.sortMostToLeast);
       createElements(mostDiscussed);
     }
 
@@ -75,14 +76,13 @@
   };
 
   function onClick(evt) {
-    onFilterchange(evt);
+    onFilterChange(evt);
   }
 
-  var DEBOUNCE_INTERVAL = 500;
   imgFilters.addEventListener('mouseup', window.utils.debounce(onClick, DEBOUNCE_INTERVAL));
 
 
-  window.load(URL, onSuccess, onError);
+  window.backend.load(URL, onSuccess, onError);
   window.photos = {
     template: template,
     onError: onError

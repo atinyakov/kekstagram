@@ -1,13 +1,13 @@
 'use strict';
 
 (function () {
+  var COMMENTS_AMOUNT = 5;
   var bigPicture = document.querySelector('.big-picture');
-
   var pictures = document.querySelector('.pictures.container');
   var closeBigPicture = bigPicture.querySelector('.big-picture__cancel');
-  var overlays = document.querySelectorAll('.overlay');
-  var cancelButtons = document.querySelectorAll('.cancel');
-  var ESC_KEYCODE = 27;
+  var loadmoreButton = document.querySelector('.social__loadmore');
+  var commentsBlock = document.querySelector('.social__comments');
+
 
   var hideElement = function (elem) {
     document.querySelector(elem).classList.add('visually-hidden');
@@ -19,22 +19,22 @@
 
 
   var closePopup = function () {
-    [].forEach.call(overlays, function (el) {
-      el.classList.add('hidden');
-      el.value = '';
-    });
 
-    [].forEach.call(cancelButtons, function (el) {
-      el.removeEventListener('mouseup', closePopup);
-      el.removeEventListener('mouseup', openPicture);
-    });
+    bigPicture.classList.add('hidden');
+    bigPicture.value = '';
+    closeBigPicture.removeEventListener('mouseup', closePopup);
 
     document.removeEventListener('keyup', onKeyPress);
   };
 
   var onKeyPress = function (evt) {
 
-    if (evt.keyCode === ESC_KEYCODE) {
+    if (evt.keyCode === window.constants.ESC_KEYCODE) {
+      closePopup();
+      return;
+    }
+
+    if ((evt.keyCode === window.constants.ENTER_KEYCODE) && (evt.target === closeBigPicture)) {
       closePopup();
     }
   };
@@ -51,8 +51,6 @@
     document.addEventListener('keyup', onKeyPress);
   };
 
-  var COMMENTS_AMOUNT = 5;
-  var commentsBlock = document.querySelector('.social__comments');
 
   var addComments = function (j) {
     var commentsFragment = document.createDocumentFragment();
@@ -77,7 +75,6 @@
 
       commentsBlock.appendChild(commentsFragment);
     };
-    var loadmoreButton = document.querySelector('.social__loadmore');
 
     var onloadMore = function () {
       commentsToAdd += 5;
@@ -122,8 +119,4 @@
   };
 
   pictures.addEventListener('mouseup', openPicture);
-
-  window.pictures = {
-    closePopup: closePopup
-  };
 })();
